@@ -167,13 +167,13 @@ contract TestHelpers is Test {
     function _createLiquidityPosition(
         address user,
         address protocol,
-        address tokenA,
-        address tokenB,
+        address tokenAAddr,
+        address tokenBAddr,
         uint256 amountA,
         uint256 amountB
     ) internal returns (uint256 liquidity) {
         vm.prank(user);
-        return restakeLPHook.provideLiquidity(protocol, tokenA, tokenB, amountA, amountB);
+        return restakeLPHook.provideLiquidity(protocol, tokenAAddr, tokenBAddr, amountA, amountB);
     }
     
     function _createRestakingPosition(
@@ -249,16 +249,16 @@ contract TestHelpers is Test {
     }
     
     // Helper functions for fuzz testing
-    function _generateRandomAmount(uint256 min, uint256 max) internal pure returns (uint256) {
-        uint256 random = uint256(keccak256(abi.encodePacked(block.timestamp, block.difficulty)));
+    function _generateRandomAmount(uint256 min, uint256 max) internal view returns (uint256) {
+        uint256 random = uint256(keccak256(abi.encodePacked(block.timestamp, block.prevrandao)));
         return min + (random % (max - min + 1));
     }
     
-    function _generateRandomAddress() internal pure returns (address) {
-        return address(uint160(uint256(keccak256(abi.encodePacked(block.timestamp, block.difficulty)))));
+    function _generateRandomAddress() internal view returns (address) {
+        return address(uint160(uint256(keccak256(abi.encodePacked(block.timestamp, block.prevrandao)))));
     }
     
-    function _generateRandomString(uint256 length) internal pure returns (string memory) {
+    function _generateRandomString(uint256 length) internal view returns (string memory) {
         bytes memory chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         bytes memory result = new bytes(length);
         

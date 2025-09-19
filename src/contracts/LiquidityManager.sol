@@ -329,18 +329,18 @@ contract LiquidityManager is Ownable, ReentrancyGuard {
      */
     function getUserStats(address user) external view returns (
         uint256 totalPositions,
-        uint256 totalLiquidity,
+        uint256 userTotalLiquidity,
         uint256 totalFees,
         uint256 activePositions
     ) {
         UserPosition[] memory positions = userPositions[user];
         totalPositions = positions.length;
-        totalLiquidity = 0;
+        userTotalLiquidity = 0;
         activePositions = 0;
 
         for (uint256 i = 0; i < positions.length; i++) {
             if (positions[i].isActive) {
-                totalLiquidity += positions[i].liquidity;
+                userTotalLiquidity += positions[i].liquidity;
                 activePositions++;
             }
         }

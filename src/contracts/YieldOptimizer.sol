@@ -321,7 +321,7 @@ contract YieldOptimizer is Ownable, ReentrancyGuard {
     function _executeAllocation(
         address protocol,
         uint256 amount,
-        uint256 maxSlippage
+        uint256 /* maxSlippage */
     ) internal returns (uint256 yield) {
         // Simplified yield calculation based on protocol APY
         uint256 apy = protocolYields[protocol].apy;

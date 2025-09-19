@@ -79,8 +79,8 @@ contract RestakeLPHookUnitTest is TestHelpers {
         vm.prank(OWNER);
         restakeLPHook.removeProtocol(UNISWAP_V3);
         
-        RestakeLPHook.ProtocolInfo memory protocolInfo = restakeLPHook.supportedProtocols(UNISWAP_V3);
-        assertFalse(protocolInfo.isActive);
+        (, , bool protocolActive, ) = restakeLPHook.supportedProtocols(UNISWAP_V3);
+        assertFalse(protocolActive);
     }
     
     function test_RemoveProtocol_NotActive() public {
@@ -102,11 +102,11 @@ contract RestakeLPHookUnitTest is TestHelpers {
         vm.prank(OWNER);
         restakeLPHook.addToken(newToken, symbol, decimals, minAmount);
         
-        RestakeLPHook.TokenInfo memory tokenInfo = restakeLPHook.supportedTokens(newToken);
-        assertEq(tokenInfo.symbol, symbol);
-        assertEq(tokenInfo.decimals, decimals);
-        assertTrue(tokenInfo.isActive);
-        assertEq(tokenInfo.minAmount, minAmount);
+        (string memory tokenSymbol, uint8 tokenDecimals, bool tokenActive, uint256 tokenMinAmount) = restakeLPHook.supportedTokens(newToken);
+        assertEq(tokenSymbol, symbol);
+        assertEq(tokenDecimals, decimals);
+        assertTrue(tokenActive);
+        assertEq(tokenMinAmount, minAmount);
     }
     
     function test_AddToken_InvalidAddress() public {
@@ -131,8 +131,8 @@ contract RestakeLPHookUnitTest is TestHelpers {
         vm.prank(OWNER);
         restakeLPHook.removeToken(address(tokenA));
         
-        RestakeLPHook.TokenInfo memory tokenInfo = restakeLPHook.supportedTokens(address(tokenA));
-        assertFalse(tokenInfo.isActive);
+        (, , bool tokenActive, ) = restakeLPHook.supportedTokens(address(tokenA));
+        assertFalse(tokenActive);
     }
     
     // Test 51-80: Liquidity Provision
