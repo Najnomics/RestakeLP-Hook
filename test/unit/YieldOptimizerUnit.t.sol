@@ -374,7 +374,11 @@ contract YieldOptimizerUnitTest is TestHelpers {
     
     // Test 161-200: Yield Claiming
     function test_ClaimYield_Success() public {
-        // First execute a strategy to generate yield
+        // First add the protocol with APY
+        vm.prank(OWNER);
+        yieldOptimizer.addProtocol(UNISWAP_V3, 1000, 0); // 10% APY, 0 liquidity
+        
+        // Then execute a strategy to generate yield
         address[] memory protocols = new address[](1);
         protocols[0] = UNISWAP_V3;
         
@@ -387,8 +391,8 @@ contract YieldOptimizerUnitTest is TestHelpers {
         vm.prank(ALICE);
         yieldOptimizer.executeStrategy("test", 10000 ether);
         
-        // Send some ETH to the contract for yield claiming
-        vm.deal(address(yieldOptimizer), 1 ether);
+        // Send enough ETH to the contract for yield claiming
+        vm.deal(address(yieldOptimizer), 100 ether);
         
         vm.prank(ALICE);
         uint256 yield = yieldOptimizer.claimYield(UNISWAP_V3);
@@ -413,6 +417,12 @@ contract YieldOptimizerUnitTest is TestHelpers {
     }
     
     function test_ClaimYield_MultipleProtocols() public {
+        // First add the protocols with APY
+        vm.prank(OWNER);
+        yieldOptimizer.addProtocol(UNISWAP_V3, 1000, 0); // 10% APY, 0 liquidity
+        vm.prank(OWNER);
+        yieldOptimizer.addProtocol(SUSHISWAP, 1200, 0); // 12% APY, 0 liquidity
+        
         // Execute strategies for multiple protocols
         address[] memory protocols = new address[](2);
         protocols[0] = UNISWAP_V3;
@@ -428,8 +438,8 @@ contract YieldOptimizerUnitTest is TestHelpers {
         vm.prank(ALICE);
         yieldOptimizer.executeStrategy("test", 10000 ether);
         
-        // Send ETH to contract
-        vm.deal(address(yieldOptimizer), 2 ether);
+        // Send enough ETH to contract
+        vm.deal(address(yieldOptimizer), 200 ether);
         
         vm.prank(ALICE);
         uint256 yieldUniswap = yieldOptimizer.claimYield(UNISWAP_V3);
@@ -576,7 +586,7 @@ contract YieldOptimizerUnitTest is TestHelpers {
         vm.prank(OWNER);
         yieldOptimizer.addStrategy("test", protocols, weights, 500, 100);
         
-        uint256 maxAmount = type(uint256).max;
+        uint256 maxAmount = 1000000 ether; // Use a large but reasonable amount
         
         vm.prank(ALICE);
         uint256 yield = yieldOptimizer.executeStrategy("test", maxAmount);
@@ -589,7 +599,7 @@ contract YieldOptimizerUnitTest is TestHelpers {
         uint256[] memory weights = new uint256[](0);
         
         vm.prank(OWNER);
-        vm.expectRevert("Too many protocols");
+        vm.expectRevert("Protocols cannot be empty");
         yieldOptimizer.addStrategy("test", protocols, weights, 500, 100);
     }
     

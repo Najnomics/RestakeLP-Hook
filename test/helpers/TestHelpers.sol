@@ -14,7 +14,7 @@ import {YieldOptimizer} from "../../src/contracts/YieldOptimizer.sol";
  */
 contract TestHelpers is Test {
     // Test addresses
-    address public constant ALICE = address(0x1);
+    address public constant ALICE = address(0x1234567890123456789012345678901234567890);
     address public constant BOB = address(0x2);
     address public constant CHARLIE = address(0x3);
     address public constant DAVE = address(0x4);

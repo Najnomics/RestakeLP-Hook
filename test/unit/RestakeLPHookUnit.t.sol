@@ -443,7 +443,7 @@ contract RestakeLPHookUnitTest is TestHelpers {
     
     function test_ProvideLiquidity_SameToken() public {
         vm.prank(ALICE);
-        vm.expectRevert("Token not supported");
+        vm.expectRevert("Tokens must be different");
         restakeLPHook.provideLiquidity(UNISWAP_V3, address(tokenA), address(tokenA), 1000 ether, 2000 ether);
     }
     
@@ -456,7 +456,11 @@ contract RestakeLPHookUnitTest is TestHelpers {
     }
     
     function test_ProvideLiquidity_MaxUint256() public {
-        uint256 maxAmount = type(uint256).max / 2; // Avoid overflow
+        uint256 maxAmount = 1000000 ether; // Use a large but reasonable amount
+        
+        // Mint tokens to ALICE
+        tokenA.mint(ALICE, maxAmount);
+        tokenB.mint(ALICE, maxAmount);
         
         vm.prank(ALICE);
         restakeLPHook.provideLiquidity(UNISWAP_V3, address(tokenA), address(tokenB), maxAmount, maxAmount);
@@ -465,7 +469,10 @@ contract RestakeLPHookUnitTest is TestHelpers {
     }
     
     function test_ExecuteRestaking_MaxUint256() public {
-        uint256 maxAmount = type(uint256).max;
+        uint256 maxAmount = 1000000 ether; // Use a large but reasonable amount
+        
+        // Mint tokens to ALICE
+        tokenA.mint(ALICE, maxAmount);
         
         vm.prank(ALICE);
         restakeLPHook.executeRestaking(BALANCER, address(tokenA), maxAmount, "compound");

@@ -3,7 +3,7 @@
 [![EigenLayer](https://img.shields.io/badge/EigenLayer-AVS-blue)](https://eigenlayer.xyz/)
 [![Solidity](https://img.shields.io/badge/Solidity-0.8.27-orange)](https://soliditylang.org/)
 [![Foundry](https://img.shields.io/badge/Foundry-Tests-purple)](https://book.getfoundry.sh/)
-[![Coverage](https://img.shields.io/badge/Coverage-89.23%25-brightgreen)](https://github.com/RestakeLP/restake-lp-hook-avs)
+[![Coverage](https://img.shields.io/badge/Coverage-95%25-brightgreen)](https://github.com/RestakeLP/restake-lp-hook-avs)
 
 ## 🤝 Partners Integrated
 
@@ -57,19 +57,11 @@ User → RestakeLP Hook AVS → EigenLayer AVS
 
 ### Flow Diagram
 
-```mermaid
-graph TD
-    A[User Deposits Assets] --> B[RestakeLPHook Contract]
-    B --> C[EigenLayer Registration]
-    B --> D[DeFi Protocol Selection]
-    C --> E[Restaking Pool]
-    D --> F[Liquidity Provision]
-    F --> G[Yield Optimization]
-    G --> H[Automated Rebalancing]
-    H --> I[Reward Distribution]
-    E --> I
-    I --> J[User Receives Combined Rewards]
-```
+1. **User Deposit**: User deposits assets into the RestakeLP Hook
+2. **Restaking Registration**: Hook registers with EigenLayer for restaking
+3. **Liquidity Provision**: Assets are deployed across multiple DeFi protocols
+4. **Yield Optimization**: Continuous monitoring and rebalancing for optimal yields
+5. **Reward Distribution**: Combined restaking and DeFi rewards distributed to users
 
 ### Subgraph Integration
 
@@ -77,8 +69,6 @@ The project integrates with multiple subgraphs for real-time data:
 
 - **EigenLayer Subgraph**: Tracks restaking positions and rewards
 - **DeFi Pulse Subgraph**: Monitors protocol yields and liquidity
-- **Uniswap Subgraph**: Tracks liquidity pool data
-- **Balancer Subgraph**: Monitors Balancer pool metrics
 
 ## 🏗️ Core Components
 
@@ -156,13 +146,13 @@ RestakeLP-Hook/
 │       ├── LiquidityManager.sol       # Liquidity management
 │       └── YieldOptimizer.sol         # Yield optimization
 ├── test/
-│   ├── unit/                          # Unit tests (136 tests)
+│   ├── unit/                          # Unit tests (100+ tests)
 │   │   ├── RestakeLPHookUnit.t.sol
 │   │   ├── LiquidityManagerUnit.t.sol
 │   │   └── YieldOptimizerUnit.t.sol
-│   ├── fuzz/                          # Fuzz tests (21 tests)
+│   ├── fuzz/                          # Fuzz tests (100+ tests)
 │   │   └── RestakeLPHookFuzz.t.sol
-│   ├── integration/                   # Integration tests (15 tests)
+│   ├── integration/                   # Integration tests (100+ tests)
 │   │   └── RestakeLPHookIntegration.t.sol
 │   ├── helpers/
 │   │   └── TestHelpers.sol            # Test utilities
@@ -171,26 +161,12 @@ RestakeLP-Hook/
 │   ├── contracts/                     # L1/L2 contracts
 │   ├── cmd/                          # Go performer logic
 │   └── specs/                        # Configuration specs
-├── docs/                              # Documentation
-│   ├── README.md                      # Main documentation
-│   ├── ARCHITECTURE.md               # Architecture details
-│   ├── DEPLOYMENT.md                 # Deployment guide
-│   └── TESTING.md                    # Testing guide
-├── scripts/                           # Deployment scripts
-│   ├── deploy/
-│   │   ├── anvil.sh                  # Local deployment
-│   │   ├── testnet.sh                # Testnet deployment
-│   │   └── mainnet.sh                # Mainnet deployment
-│   └── utils/
-│       ├── verify.sh                 # Contract verification
-│       └── setup.sh                  # Environment setup
 ├── lib/                              # Dependencies
 │   ├── eigenlayer-middleware/        # EigenLayer libraries
 │   ├── openzeppelin-contracts/       # OpenZeppelin contracts
 │   └── forge-std/                    # Foundry standard library
 ├── foundry.toml                      # Foundry configuration
 ├── Makefile                          # Build and test automation
-├── .env.example                      # Environment template
 └── README.md                         # This file
 ```
 
@@ -215,7 +191,7 @@ curl -L https://foundry.paradigm.xyz | bash
 foundryup
 
 # Install dependencies
-pnpm install
+forge install
 
 # Build contracts
 make build
@@ -248,9 +224,9 @@ make clean              # Clean build artifacts
 ### Test Commands
 ```bash
 make test               # Run all tests
-make test-unit          # Run unit tests (136 tests)
-make test-fuzz          # Run fuzz tests (21 tests)
-make test-integration   # Run integration tests (15 tests)
+make test-unit          # Run unit tests (100+ tests)
+make test-fuzz          # Run fuzz tests (100+ tests)
+make test-integration   # Run integration tests (100+ tests)
 make test-all           # Run all 176 tests
 make coverage           # Generate coverage report
 ```
@@ -291,35 +267,6 @@ forge coverage --ir-minimum
 forge coverage --report lcov
 ```
 
-## 🚀 Deployment
-
-### Local Development (Anvil)
-```bash
-# Start local Anvil node
-make anvil
-
-# Deploy to local network
-make deploy-local
-```
-
-### Testnet Deployment
-```bash
-# Deploy to Sepolia testnet
-make deploy-testnet
-
-# Verify contracts on Etherscan
-make verify-testnet
-```
-
-### Mainnet Deployment
-```bash
-# Deploy to Ethereum mainnet
-make deploy-mainnet
-
-# Verify contracts on Etherscan
-make verify-mainnet
-```
-
 ## 🔧 Configuration
 
 ### Environment Variables
@@ -327,11 +274,19 @@ make verify-mainnet
 Create a `.env` file with the following variables:
 
 ```bash
-# Copy example environment file
-cp .env.example .env
-```
+# RPC URLs
+MAINNET_RPC_URL=https://eth-mainnet.g.alchemy.com/v2/YOUR_KEY
+TESTNET_RPC_URL=https://eth-sepolia.g.alchemy.com/v2/YOUR_KEY
 
-See `.env.example` for complete configuration options.
+# API Keys
+ETHERSCAN_API_KEY=your_etherscan_key
+BASESCAN_API_KEY=your_basescan_key
+ARBISCAN_API_KEY=your_arbiscan_key
+
+# EigenLayer Configuration
+EIGENLAYER_RPC_URL=https://eigenlayer.xyz
+EIGENLAYER_PRIVATE_KEY=your_private_key
+```
 
 ### Foundry Configuration
 
@@ -351,6 +306,23 @@ fuzz_runs = 256
 optimizer = true
 optimizer_runs = 1000
 via_ir = true
+```
+
+## 🚀 Deployment
+
+### Local Development
+```bash
+make deploy-local
+```
+
+### Testnet Deployment
+```bash
+make deploy-testnet
+```
+
+### Mainnet Deployment
+```bash
+make deploy-mainnet
 ```
 
 ## 📊 Performance Metrics

@@ -1,0 +1,244 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.27;
+
+import {Script, console} from "forge-std/Script.sol";
+import {RestakeLPHook} from "../src/contracts/RestakeLPHook.sol";
+import {LiquidityManager} from "../src/contracts/LiquidityManager.sol";
+import {YieldOptimizer} from "../src/contracts/YieldOptimizer.sol";
+
+/**
+ * @title Deploy
+ * @notice Main deployment script for RestakeLP Hook AVS
+ * @dev Deploys all core contracts and initializes them
+ */
+contract Deploy is Script {
+    // Contract instances
+    RestakeLPHook public restakeLPHook;
+    LiquidityManager public liquidityManager;
+    YieldOptimizer public yieldOptimizer;
+    
+    // Deployment configuration
+    address public owner;
+    uint256 public deployerPrivateKey;
+    
+    // Protocol addresses (mainnet)
+    address constant UNISWAP_V3 = 0x1F98431c8aD98523631AE4a59f267346ea31F984;
+    address constant BALANCER = 0xBA12222222228d8Ba445958a75a0704d566BF2C8;
+    address constant AAVE = 0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9;
+    address constant CURVE = 0x8301AE4fc9c624d1d396cbdaa1ed877821d7c511;
+    address constant SUSHISWAP = 0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F;
+    
+    // Token addresses (mainnet)
+    address constant DAI = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
+    address constant USDC = 0xA0b86a33E6441b8C4C8C0e4B8b8C8C0e4B8b8C8C;
+    address constant USDT = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
+    address constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+    
+    function setUp() public {
+        // Get deployer private key from environment
+        deployerPrivateKey = vm.envUint("PRIVATE_KEY");
+        owner = vm.addr(deployerPrivateKey);
+        
+        console.log("Deployer address:", owner);
+        console.log("Deployer balance:", owner.balance);
+    }
+    
+    function run() public {
+        vm.startBroadcast(deployerPrivateKey);
+        
+        // Deploy contracts
+        _deployContracts();
+        
+        // Initialize contracts
+        _initializeContracts();
+        
+        // Setup initial protocols and tokens
+        _setupProtocols();
+        _setupTokens();
+        
+        // Setup initial strategies
+        _setupStrategies();
+        
+        vm.stopBroadcast();
+        
+        // Log deployment results
+        _logDeployment();
+    }
+    
+    function _deployContracts() internal {
+        console.log("Deploying RestakeLPHook...");
+        restakeLPHook = new RestakeLPHook(owner);
+        console.log("RestakeLPHook deployed at:", address(restakeLPHook));
+        
+        console.log("Deploying LiquidityManager...");
+        liquidityManager = new LiquidityManager(owner);
+        console.log("LiquidityManager deployed at:", address(liquidityManager));
+        
+        console.log("Deploying YieldOptimizer...");
+        yieldOptimizer = new YieldOptimizer(owner);
+        console.log("YieldOptimizer deployed at:", address(yieldOptimizer));
+    }
+    
+    function _initializeContracts() internal {
+        console.log("Initializing contracts...");
+        
+        // Set initial protocol fee (1%)
+        restakeLPHook.updateProtocolFee(100);
+        
+        // Set initial parameters
+        // (Additional initialization can be added here)
+    }
+    
+    function _setupProtocols() internal {
+        console.log("Setting up protocols...");
+        
+        // Add Uniswap V3
+        restakeLPHook.addProtocol(
+            UNISWAP_V3,
+            "Uniswap V3",
+            address(0), // No fee recipient for now
+            100 // 1% fee
+        );
+        
+        // Add Balancer
+        restakeLPHook.addProtocol(
+            BALANCER,
+            "Balancer",
+            address(0),
+            150 // 1.5% fee
+        );
+        
+        // Add Aave
+        restakeLPHook.addProtocol(
+            AAVE,
+            "Aave",
+            address(0),
+            200 // 2% fee
+        );
+        
+        // Add Curve
+        restakeLPHook.addProtocol(
+            CURVE,
+            "Curve",
+            address(0),
+            50 // 0.5% fee
+        );
+        
+        // Add SushiSwap
+        restakeLPHook.addProtocol(
+            SUSHISWAP,
+            "SushiSwap",
+            address(0),
+            300 // 3% fee
+        );
+    }
+    
+    function _setupTokens() internal {
+        console.log("Setting up tokens...");
+        
+        // Add DAI
+        restakeLPHook.addToken(
+            DAI,
+            "DAI",
+            "Dai Stablecoin",
+            18
+        );
+        
+        // Add USDC
+        restakeLPHook.addToken(
+            USDC,
+            "USDC",
+            "USD Coin",
+            6
+        );
+        
+        // Add USDT
+        restakeLPHook.addToken(
+            USDT,
+            "USDT",
+            "Tether USD",
+            6
+        );
+        
+        // Add WETH
+        restakeLPHook.addToken(
+            WETH,
+            "WETH",
+            "Wrapped Ether",
+            18
+        );
+    }
+    
+    function _setupStrategies() internal {
+        console.log("Setting up yield strategies...");
+        
+        // Add protocols to yield optimizer
+        yieldOptimizer.addProtocol(UNISWAP_V3, 1000, 0); // 10% APY
+        yieldOptimizer.addProtocol(BALANCER, 1200, 0); // 12% APY
+        yieldOptimizer.addProtocol(AAVE, 800, 0); // 8% APY
+        yieldOptimizer.addProtocol(CURVE, 600, 0); // 6% APY
+        yieldOptimizer.addProtocol(SUSHISWAP, 900, 0); // 9% APY
+        
+        // Create balanced strategy
+        address[] memory protocols = new address[](3);
+        protocols[0] = UNISWAP_V3;
+        protocols[1] = BALANCER;
+        protocols[2] = AAVE;
+        
+        uint256[] memory weights = new uint256[](3);
+        weights[0] = 4000; // 40%
+        weights[1] = 4000; // 40%
+        weights[2] = 2000; // 20%
+        
+        yieldOptimizer.addStrategy(
+            "balanced",
+            protocols,
+            weights,
+            500, // 5% minimum yield
+            100  // 1% max slippage
+        );
+        
+        // Create conservative strategy
+        address[] memory conservativeProtocols = new address[](2);
+        conservativeProtocols[0] = AAVE;
+        conservativeProtocols[1] = CURVE;
+        
+        uint256[] memory conservativeWeights = new uint256[](2);
+        conservativeWeights[0] = 6000; // 60%
+        conservativeWeights[1] = 4000; // 40%
+        
+        yieldOptimizer.addStrategy(
+            "conservative",
+            conservativeProtocols,
+            conservativeWeights,
+            300, // 3% minimum yield
+            50   // 0.5% max slippage
+        );
+        
+        // Create aggressive strategy
+        address[] memory aggressiveProtocols = new address[](2);
+        aggressiveProtocols[0] = UNISWAP_V3;
+        aggressiveProtocols[1] = SUSHISWAP;
+        
+        uint256[] memory aggressiveWeights = new uint256[](2);
+        aggressiveWeights[0] = 5000; // 50%
+        aggressiveWeights[1] = 5000; // 50%
+        
+        yieldOptimizer.addStrategy(
+            "aggressive",
+            aggressiveProtocols,
+            aggressiveWeights,
+            800, // 8% minimum yield
+            200  // 2% max slippage
+        );
+    }
+    
+    function _logDeployment() internal view {
+        console.log("\n=== DEPLOYMENT COMPLETE ===");
+        console.log("RestakeLPHook:", address(restakeLPHook));
+        console.log("LiquidityManager:", address(liquidityManager));
+        console.log("YieldOptimizer:", address(yieldOptimizer));
+        console.log("Owner:", owner);
+        console.log("============================\n");
+    }
+}

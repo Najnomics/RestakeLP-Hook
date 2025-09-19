@@ -120,6 +120,7 @@ contract YieldOptimizer is Ownable, ReentrancyGuard {
         uint256 maxSlippage
     ) external onlyOwner {
         require(bytes(name).length > 0, "Invalid strategy name");
+        require(protocols.length > 0, "Protocols cannot be empty");
         require(protocols.length == weights.length, "Arrays length mismatch");
         require(protocols.length <= MAX_PROTOCOLS_PER_STRATEGY, "Too many protocols");
         require(strategyNames.length < MAX_STRATEGIES, "Max strategies exceeded");

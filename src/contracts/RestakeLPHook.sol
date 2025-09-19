@@ -201,6 +201,9 @@ contract RestakeLPHook is Ownable, ReentrancyGuard, Pausable {
         nonReentrant
         returns (uint256 liquidity) {
         
+        // Validate that tokens are different
+        require(tokenA != tokenB, "Tokens must be different");
+        
         // Transfer tokens from user
         IERC20(tokenA).safeTransferFrom(msg.sender, address(this), amountA);
         IERC20(tokenB).safeTransferFrom(msg.sender, address(this), amountB);

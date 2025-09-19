@@ -42,8 +42,7 @@ go.work
 *.swo
 *~
 
-context/
-
+# macOS
 .DS_Store
 .DS_Store?
 ._*
@@ -58,6 +57,7 @@ Thumbs.db
 *.pem
 *.p12
 keys/
+private-keys/
 
 # Logs
 *.log
@@ -85,14 +85,42 @@ temp/
 # Coverage reports
 coverage.txt
 coverage.html
+lcov.info
 
 # Build artifacts
 dist/
 build/
 
-# Dependency directories
+# Deployment artifacts
+deployments/
+!deployments/.gitkeep
 
+# Test artifacts
+test-results/
+coverage/
 
-context/
+# Documentation build
+docs/_build/
+site/
 
-l
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Editor files
+*~
+*.swp
+*.swo
+.#*
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Keep lib directory (dependencies)
+!lib/
+lib/*/
+!lib/*/README.md
+!lib/*/LICENSE*

@@ -51,9 +51,9 @@ test-integration:
 	@forge test --match-path "test/integration/*" -vv
 	@echo "$(GREEN)✓ Integration tests passed$(NC)"
 
-.PHONY: test-300
-test-300: test
-	@echo "$(GREEN)✓ All 300+ tests completed successfully$(NC)"
+.PHONY: test-all
+test-all: test
+	@echo "$(GREEN)✓ All 176 tests completed successfully$(NC)"
 
 # Utility targets
 .PHONY: clean
@@ -86,17 +86,78 @@ gas-report:
 	@forge test --gas-report
 	@echo "$(GREEN)✓ Gas report completed$(NC)"
 
+# Coverage targets
+.PHONY: coverage-ir
+coverage-ir:
+	@echo "$(BLUE)Running coverage with IR minimum...$(NC)"
+	@forge coverage --ir-minimum
+	@echo "$(GREEN)✓ Coverage with IR completed$(NC)"
+
+# Deployment targets
+.PHONY: deploy-local
+deploy-local:
+	@echo "$(BLUE)Deploying to local Anvil...$(NC)"
+	@./scripts/deploy/anvil.sh
+	@echo "$(GREEN)✓ Local deployment completed$(NC)"
+
+.PHONY: deploy-testnet
+deploy-testnet:
+	@echo "$(BLUE)Deploying to testnet...$(NC)"
+	@./scripts/deploy/testnet.sh
+	@echo "$(GREEN)✓ Testnet deployment completed$(NC)"
+
+.PHONY: deploy-mainnet
+deploy-mainnet:
+	@echo "$(BLUE)Deploying to mainnet...$(NC)"
+	@./scripts/deploy/mainnet.sh
+	@echo "$(GREEN)✓ Mainnet deployment completed$(NC)"
+
+# Setup targets
+.PHONY: setup
+setup:
+	@echo "$(BLUE)Setting up development environment...$(NC)"
+	@./scripts/utils/setup.sh
+	@echo "$(GREEN)✓ Setup completed$(NC)"
+
+.PHONY: anvil
+anvil:
+	@echo "$(BLUE)Starting Anvil local node...$(NC)"
+	@anvil --host 0.0.0.0 --port 8545
+
+# Security targets
+.PHONY: security
+security:
+	@echo "$(BLUE)Running security analysis...$(NC)"
+	@forge test --match-contract "*Security*" -vv
+	@echo "$(GREEN)✓ Security analysis completed$(NC)"
+
 .PHONY: help
 help:
 	@echo "RestakeLP Hook AVS - Available Commands:"
+	@echo ""
+	@echo "Build Commands:"
 	@echo "  build              - Build contracts"
-	@echo "  test               - Run all tests"
-	@echo "  test-unit          - Run unit tests"
-	@echo "  test-fuzz          - Run fuzz tests"
-	@echo "  test-integration   - Run integration tests"
-	@echo "  test-300           - Run all 300+ tests"
+	@echo "  build-production   - Build for production"
 	@echo "  clean              - Clean build artifacts"
+	@echo ""
+	@echo "Test Commands:"
+	@echo "  test               - Run all tests"
+	@echo "  test-unit          - Run unit tests (136 tests)"
+	@echo "  test-fuzz          - Run fuzz tests (21 tests)"
+	@echo "  test-integration   - Run integration tests (15 tests)"
+	@echo "  test-all           - Run all 176 tests"
+	@echo "  coverage           - Run coverage"
+	@echo "  coverage-ir        - Run coverage with IR minimum"
+	@echo "  gas-report         - Generate gas report"
+	@echo ""
+	@echo "Deployment Commands:"
+	@echo "  deploy-local       - Deploy to local Anvil"
+	@echo "  deploy-testnet     - Deploy to testnet"
+	@echo "  deploy-mainnet     - Deploy to mainnet"
+	@echo "  anvil              - Start Anvil local node"
+	@echo ""
+	@echo "Setup Commands:"
+	@echo "  setup              - Setup development environment"
 	@echo "  format             - Format code"
 	@echo "  lint               - Lint code"
-	@echo "  coverage           - Run coverage"
-	@echo "  gas-report         - Generate gas report"
+	@echo "  security           - Run security analysis"
