@@ -44,11 +44,11 @@ contract RestakeLPHookUnitTest is TestHelpers {
         vm.prank(OWNER);
         restakeLPHook.addProtocol(newProtocol, name, router, fee);
         
-        RestakeLPHook.ProtocolInfo memory protocolInfo = restakeLPHook.supportedProtocols(newProtocol);
-        assertEq(protocolInfo.name, name);
-        assertEq(protocolInfo.router, router);
-        assertTrue(protocolInfo.isActive);
-        assertEq(protocolInfo.fee, fee);
+        (string memory protocolName, address protocolRouter, bool protocolActive, uint256 protocolFee) = restakeLPHook.supportedProtocols(newProtocol);
+        assertEq(protocolName, name);
+        assertEq(protocolRouter, router);
+        assertTrue(protocolActive);
+        assertEq(protocolFee, fee);
     }
     
     function test_AddProtocol_InvalidAddress() public {

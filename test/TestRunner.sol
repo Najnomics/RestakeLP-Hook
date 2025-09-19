@@ -2,6 +2,7 @@
 pragma solidity ^0.8.27;
 
 import {Test} from "forge-std/Test.sol";
+import {RestakeLPHook} from "../src/contracts/RestakeLPHook.sol";
 import {TestHelpers} from "./helpers/TestHelpers.sol";
 
 /**
@@ -42,8 +43,11 @@ contract TestRunner is TestHelpers {
         // Test complete workflow across all contracts
         
         // 1. Setup protocols and tokens
-        assertTrue(restakeLPHook.supportedProtocols(UNISWAP_V3));
-        assertTrue(restakeLPHook.supportedTokens(address(tokenA)));
+        (string memory protocolName, address protocolRouter, bool protocolActive, uint256 protocolFee) = restakeLPHook.supportedProtocols(UNISWAP_V3);
+        assertTrue(protocolActive);
+        
+        (string memory tokenSymbol, uint8 tokenDecimals, bool tokenActive, uint256 tokenMinAmount) = restakeLPHook.supportedTokens(address(tokenA));
+        assertTrue(tokenActive);
         
         // 2. Create liquidity positions
         vm.prank(ALICE);

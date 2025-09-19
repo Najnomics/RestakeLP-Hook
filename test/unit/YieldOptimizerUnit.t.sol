@@ -131,9 +131,16 @@ contract YieldOptimizerUnitTest is TestHelpers {
             yieldOptimizer.addStrategy(name, protocols, weights, 500, 100);
         }
         
+        // Define protocols and weights for the overflow test
+        address[] memory overflowProtocols = new address[](1);
+        overflowProtocols[0] = UNISWAP_V3;
+        
+        uint256[] memory overflowWeights = new uint256[](1);
+        overflowWeights[0] = 10000;
+        
         vm.prank(OWNER);
         vm.expectRevert("Max strategies exceeded");
-        yieldOptimizer.addStrategy("overflow", protocols, weights, 500, 100);
+        yieldOptimizer.addStrategy("overflow", overflowProtocols, overflowWeights, 500, 100);
     }
     
     function test_AddStrategy_OnlyOwner() public {

@@ -42,7 +42,8 @@ go.work
 *.swo
 *~
 
-# OS
+context/
+
 .DS_Store
 .DS_Store?
 ._*
@@ -90,8 +91,8 @@ dist/
 build/
 
 # Dependency directories
-lib/ # Foundry dependencies are managed via submodules
+
 
 context/
 
-lib/
+l
