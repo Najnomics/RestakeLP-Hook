@@ -106,12 +106,22 @@ The project integrates with multiple subgraphs for real-time data:
   - Risk-adjusted returns
   - Performance analytics
 
-## 🛠️ Templates Used
+## 🛠️ Dependencies Used
 
-### EigenLayer Integration
+### Core Dependencies
+- **forge-std**: Foundry standard library for testing and scripting
+- **openzeppelin-contracts**: Secure contract libraries (Ownable, ReentrancyGuard, Pausable, SafeERC20)
+- **eigenlayer-middleware**: EigenLayer AVS framework and middleware
+
+### Additional Dependencies
+- **chainlink-brownie-contracts**: Chainlink oracle contracts
+- **contracts**: Across Protocol bridge contracts
+- **v4-core**: Uniswap V4 core contracts
+- **v4-periphery**: Uniswap V4 periphery contracts
+
+### Templates Used
 - **Hourglass AVS Template**: Base framework for EigenLayer AVS development
 - **DevKit CLI**: Development toolkit for AVS creation and management
-- **EigenLayer Middleware**: Core libraries for restaking operations
 
 ## 🧪 Testing Infrastructure
 
@@ -175,6 +185,8 @@ RestakeLP-Hook/
 │   ├── README.md                      # Main documentation
 │   ├── ARCHITECTURE.md               # Architecture details
 │   ├── DEPLOYMENT.md                 # Deployment guide
+│   ├── DEPLOYMENT_SCRIPTS.md         # Deployment scripts guide
+│   ├── DEPENDENCIES.md               # Dependencies documentation
 │   └── TESTING.md                    # Testing guide
 ├── scripts/                           # Deployment scripts
 │   ├── deploy/
@@ -185,9 +197,13 @@ RestakeLP-Hook/
 │       ├── verify.sh                 # Contract verification
 │       └── setup.sh                  # Environment setup
 ├── lib/                              # Dependencies
-│   ├── eigenlayer-middleware/        # EigenLayer libraries
+│   ├── forge-std/                    # Foundry standard library
 │   ├── openzeppelin-contracts/       # OpenZeppelin contracts
-│   └── forge-std/                    # Foundry standard library
+│   ├── eigenlayer-middleware/        # EigenLayer libraries
+│   ├── chainlink-brownie-contracts/  # Chainlink contracts
+│   ├── contracts/                    # Across Protocol contracts
+│   ├── v4-core/                      # Uniswap V4 core
+│   └── v4-periphery/                 # Uniswap V4 periphery
 ├── foundry.toml                      # Foundry configuration
 ├── Makefile                          # Build and test automation
 ├── .env.example                      # Environment template
@@ -198,8 +214,7 @@ RestakeLP-Hook/
 
 ### Prerequisites
 
-- **Node.js**: v18.0.0 or higher
-- **Foundry**: Latest version
+- **Foundry**: Latest version (for Solidity development)
 - **Go**: v1.23.6 or higher (for AVS components)
 - **Git**: Latest version
 
@@ -215,7 +230,7 @@ curl -L https://foundry.paradigm.xyz | bash
 foundryup
 
 # Install dependencies
-pnpm install
+forge install
 
 # Build contracts
 make build

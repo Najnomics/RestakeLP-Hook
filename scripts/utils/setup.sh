@@ -16,13 +16,8 @@ else
     echo "✅ Foundry already installed"
 fi
 
-# Check if Node.js is installed
-if ! command -v node &> /dev/null; then
-    echo "❌ Node.js is not installed. Please install Node.js v18+ first"
-    exit 1
-else
-    echo "✅ Node.js already installed"
-fi
+# Node.js is not required for Foundry projects
+echo "✅ Node.js not required for Foundry projects"
 
 # Check if Go is installed
 if ! command -v go &> /dev/null; then

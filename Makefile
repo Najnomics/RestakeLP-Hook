@@ -97,20 +97,39 @@ coverage-ir:
 .PHONY: deploy-local
 deploy-local:
 	@echo "$(BLUE)Deploying to local Anvil...$(NC)"
-	@./scripts/deploy/anvil.sh
+	@forge script script/DeployAnvil.s.sol --rpc-url http://localhost:8545 --broadcast
 	@echo "$(GREEN)✓ Local deployment completed$(NC)"
 
 .PHONY: deploy-testnet
 deploy-testnet:
 	@echo "$(BLUE)Deploying to testnet...$(NC)"
-	@./scripts/deploy/testnet.sh
+	@forge script script/DeployTestnet.s.sol --rpc-url $${TESTNET_RPC_URL} --broadcast --verify
 	@echo "$(GREEN)✓ Testnet deployment completed$(NC)"
 
 .PHONY: deploy-mainnet
 deploy-mainnet:
 	@echo "$(BLUE)Deploying to mainnet...$(NC)"
-	@./scripts/deploy/mainnet.sh
+	@forge script script/DeployMainnet.s.sol --rpc-url $${MAINNET_RPC_URL} --broadcast --verify
 	@echo "$(GREEN)✓ Mainnet deployment completed$(NC)"
+
+# Solidity deployment scripts
+.PHONY: deploy-script
+deploy-script:
+	@echo "$(BLUE)Running deployment script...$(NC)"
+	@forge script script/Deploy.s.sol --rpc-url $${RPC_URL} --broadcast
+	@echo "$(GREEN)✓ Deployment script completed$(NC)"
+
+.PHONY: verify-contracts
+verify-contracts:
+	@echo "$(BLUE)Verifying contracts...$(NC)"
+	@forge script script/Verify.s.sol --rpc-url $${RPC_URL}
+	@echo "$(GREEN)✓ Contract verification completed$(NC)"
+
+.PHONY: upgrade-contracts
+upgrade-contracts:
+	@echo "$(BLUE)Upgrading contracts...$(NC)"
+	@forge script script/Upgrade.s.sol --rpc-url $${RPC_URL} --broadcast
+	@echo "$(GREEN)✓ Contract upgrade completed$(NC)"
 
 # Setup targets
 .PHONY: setup
@@ -118,6 +137,12 @@ setup:
 	@echo "$(BLUE)Setting up development environment...$(NC)"
 	@./scripts/utils/setup.sh
 	@echo "$(GREEN)✓ Setup completed$(NC)"
+
+.PHONY: install-deps
+install-deps:
+	@echo "$(BLUE)Installing dependencies...$(NC)"
+	@forge install
+	@echo "$(GREEN)✓ Dependencies installed$(NC)"
 
 .PHONY: anvil
 anvil:
@@ -154,10 +179,14 @@ help:
 	@echo "  deploy-local       - Deploy to local Anvil"
 	@echo "  deploy-testnet     - Deploy to testnet"
 	@echo "  deploy-mainnet     - Deploy to mainnet"
+	@echo "  deploy-script      - Run deployment script"
+	@echo "  verify-contracts   - Verify deployed contracts"
+	@echo "  upgrade-contracts  - Upgrade deployed contracts"
 	@echo "  anvil              - Start Anvil local node"
 	@echo ""
 	@echo "Setup Commands:"
 	@echo "  setup              - Setup development environment"
+	@echo "  install-deps       - Install dependencies with forge install"
 	@echo "  format             - Format code"
 	@echo "  lint               - Lint code"
 	@echo "  security           - Run security analysis"

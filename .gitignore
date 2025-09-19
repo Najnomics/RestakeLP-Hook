@@ -4,6 +4,9 @@ out/
 broadcast/
 !broadcast/README.md
 
+context/
+
+
 # Environment files
 .env
 .env.local
@@ -124,3 +127,6 @@ Desktop.ini
 lib/*/
 !lib/*/README.md
 !lib/*/LICENSE*
+
+# Context folder (development context)
+context/

@@ -25,12 +25,12 @@ contract DeployTestnet is Script {
     address constant UNISWAP_V3 = 0x1F98431c8aD98523631AE4a59f267346ea31F984;
     address constant BALANCER = 0xBA12222222228d8Ba445958a75a0704d566BF2C8;
     address constant AAVE = 0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9;
-    address constant CURVE = 0x8301AE4fc9c624d1d396cbdaa1ed877821d7c511;
+    address constant CURVE = 0x8301AE4fc9c624d1D396cbDAa1ed877821D7C511;
     address constant SUSHISWAP = 0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F;
     
     // Sepolia testnet token addresses
     address constant DAI = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
-    address constant USDC = 0xA0b86a33E6441b8C4C8C0e4B8b8C8C0e4B8b8C8C;
+    address constant USDC = 0xa0b86a33E6441b8C4c8C0E4B8B8C8c0e4B8B8C8C;
     address constant USDT = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
     address constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
     
@@ -70,15 +70,15 @@ contract DeployTestnet is Script {
     
     function _deployContracts() internal {
         console.log("Deploying RestakeLPHook to Sepolia...");
-        restakeLPHook = new RestakeLPHook(owner);
+        restakeLPHook = new RestakeLPHook();
         console.log("RestakeLPHook deployed at:", address(restakeLPHook));
         
         console.log("Deploying LiquidityManager to Sepolia...");
-        liquidityManager = new LiquidityManager(owner);
+        liquidityManager = new LiquidityManager();
         console.log("LiquidityManager deployed at:", address(liquidityManager));
         
         console.log("Deploying YieldOptimizer to Sepolia...");
-        yieldOptimizer = new YieldOptimizer(owner);
+        yieldOptimizer = new YieldOptimizer();
         console.log("YieldOptimizer deployed at:", address(yieldOptimizer));
     }
     
@@ -143,32 +143,32 @@ contract DeployTestnet is Script {
         restakeLPHook.addToken(
             DAI,
             "DAI",
-            "Dai Stablecoin",
-            18
+            18,
+            1000
         );
         
         // Add USDC
         restakeLPHook.addToken(
             USDC,
             "USDC",
-            "USD Coin",
-            6
+            6,
+            1000
         );
         
         // Add USDT
         restakeLPHook.addToken(
             USDT,
             "USDT",
-            "Tether USD",
-            6
+            6,
+            1000
         );
         
         // Add WETH
         restakeLPHook.addToken(
             WETH,
             "WETH",
-            "Wrapped Ether",
-            18
+            18,
+            1000
         );
     }
     
