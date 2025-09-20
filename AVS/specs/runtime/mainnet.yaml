@@ -1,0 +1,43 @@
+# mainnet environment overrides for RestakeLP Hook AVS
+aggregator:
+  env:
+    -  name: "RESTAKE_LP_PROTOCOLS"
+       type: plain
+       required: false
+       value: "ethereum,arbitrum,polygon,optimism,base"
+    -  name: "SUPPORTED_TOKENS"
+       type: plain
+       required: false
+       value: "ETH,USDC,USDT,DAI,WETH,WBTC"
+    -  name: "MIN_LIQUIDITY_THRESHOLD"
+       type: plain
+       required: false
+       value: "10000"
+  resources:
+    tee_enabled: false
+
+executor:
+  env:
+    -  name: "RESTAKE_STRATEGY"
+       type: plain
+       required: false
+       value: "compound"
+    -  name: "REBALANCE_FREQUENCY"
+       type: plain
+       required: false
+       value: "3600"
+  resources:
+    tee_enabled: false
+
+performer:
+  env:
+    -  name: "TASK_TIMEOUT"
+       type: plain
+       required: false
+       value: "1200"
+    -  name: "MAX_RETRIES"
+       type: plain
+       required: false
+       value: "10"
+  resources:
+    tee_enabled: false
